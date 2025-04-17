@@ -18,7 +18,7 @@ beta_phi2, beta_psi2 = 0.01, 0.01
 
 # --- Discretization ---------------------------------------------------------
 T         = 10.0        # total time horizon
-n1, n2    = 50, 50      # grid points in I1=[0,L0], I2=[L0,L]
+n1, n2    = 500, 500      # grid points in I1=[0,L0], I2=[L0,L]
 m          = 20000       # time steps
 dt         = T / (m - 1)
 h1         = L0 / (n1 - 1)
