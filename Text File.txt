@@ -1,0 +1,66 @@
+We have this system of linear equations:
+
+z(0, t) = psi1_t(0, t)
+lambda1*psi1_x(0, t) = gamma*z(0, t) + mu*z(L0, t)
+tau*z_t + z_x = 0
+
+z(x, 0) is known and equals to -2x + 8 (exactly 0 in x=4, where it ends, since it is defined only for first part of the beam, up to L0)
+
+z(0, 1) = (psi1[0,1] - psi1[0,0])/dt - derivative of psi 1 at x=0 in time, from first equation.
+
+lamda1*((psi1[1,1] - psi1[0,1])/h1) = gamma*z(0,1) + mu*z(L0, 1)
+
+lamda1*((psi1[1,2] - psi1[0,2])/h1) = gamma*z(0,2) + mu*z(L0, 2)
+
+z(0,2) = psi1_t(0,2) = (psi1[0,2] - psi1[0,1])/dt
+
+z(L0, t) = psi1_t(0, t - tau*L0) = psi1_t(0, t - 4) = (psi1[0,t - 4] - psi1[0,t - 4 - 1])/dt
+
+This is equation in absolute values. In code we work with finite steps, so there is some small dt, and we work in a grid with dt as the size of one step. So equations transforms into:
+
+z(L0, t) = psi1_t(0, t - tau*L0) = psi1_t(0, t - 4) = (psi1[0,(t - 4)/dt] - psi1[0,(t - 4)/dt - 1])/dt
+
+And we also have this equation:
+
+tau*z_t + z_x = 0   (25)
+Which translates to:
+tau*((z(j, n+1) - z(j, n))/dt) + (z(j, n) - z(j-1, n))/h1 = 0
+
+From this equation we can express z(j, n+1) and paste it into z(L0, t) = psi1_t(0, t - tau*L0) = ...
+
+Computing z(L0, t) from this formula and pasting it into this equation:
+lamda1*((psi1[1,2] - psi1[0,2])/h1) = gamma*z(0,2) + mu*z(L0, 2)
+
+This way we left with 2 unknowns: psi1[0,2] and z(0,2). I suppose we can compute z(0,2) same way as z(L0, t) but I'm not sure.
+
+(psi1[1,2] - psi1[0,2])*lamda1/h1 = (psi1[0,2] - psi1[0,1])*gamma/dt + mu*z(L0, 2)
+
+tau*((z(j,n+1) - z(j,n))/dt) + (z(j,n) - z(j-1,n))/h1 = 0 Where z(j,n+1) = z(L0,2)
+
+tau * (z(j,n+1) − z(j,n)) / dt = − (z(j,n) − z(j−1,n)) / h1
+
+z(j,n+1) − z(j,n) = − (dt / (tau * h1)) * (z(j,n) − z(j−1,n))
+
+z(j,n+1) = z(j,n) − (dt/(tau*h1)) * (z(j,n) − z(j−1,n))     (44)
+z(0,n+1) = (psi1[0,n+1] - psi1[0,n])/dt     (45)
+
+z(L0,2) = z(L0,1) - (dt/(tau*h1)) * (z(L0,1) − z(L0−1,1))
+z(0,2) = psi1_t(0,2) = (psi1[0,2] - psi1[0,1])/dt
+
+Pasting it here:
+
+lamda1*((psi1[1,2] - psi1[0,2])/h1) = gamma*z(0,2) + mu*z(L0, 2)
+
+lamda1*((psi1[1,2] - psi1[0,2])/h1) = gamma*(psi1[0,2] - psi1[0,1])/dt + mu*(z(L0,1) - (dt/(tau*h1)) * (z(L0,1) − z(L0−1,1)))
+
+Replacing 2 by n+1:
+
+lamda1*((psi1[1,n+1] - psi1[0,n+1])/h1) = gamma*(psi1[0,n+1] - psi1[0,n])/dt + mu*(z(L0,n) - (dt/(tau*h1)) * (z(L0,n) − z(L0−1,n)))
+
+From this we need to express psi1[0,n+1]):
+
+(psi1[1,n+1] - psi1[0,n+1]) * lambda1/h1 = (psi1[0,n+1] - psi1[0,n]) * gamma/dt + (z(L0,n) - (dt/(tau*h1)) * (z(L0,n) − z(L0−1,n))) * mu
+
+psi1[0,n+1] = ((lambda1/h1)*psi1[1,n+1] + (gamma/dt)*psi1[0,n] - mu*(z(L0,n) - (dt/(tau*h1))*(z(L0,n) - z(L0-1,n))))/(lambda1/h1 + gamma/dt) (64)
+
+This is the last equation in my notes. Can you analyze them and explain to me what we should write/solve next? Or maybe I did some errors?

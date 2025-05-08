@@ -19,7 +19,7 @@ dt = T / m
 h1 = L0 / n1
 h2 = (L - L0) / n2
 
-D = int(tau * L0 / dt)
+D = int(tau * L0 / dt)  # tau*L0 expressed in grid steps
 
 t = np.linspace(0, T, m)
 x1 = np.linspace(0, L0, n1)
@@ -30,6 +30,7 @@ phi1 = np.zeros((n1, m))
 psi1 = np.zeros((n1, m))
 phi2 = np.zeros((n2, m))
 psi2 = np.zeros((n2, m))
+z    = np.zeros((n1, m))
 
 # --- Nonlinearities & Loads -----------------------------------------------
 
@@ -47,10 +48,18 @@ psi1[:, 0] = x1
 phi2[:, 0] = 10.0 - x2
 psi2[:, 0] = x2 ** 3 - (166 / 9) * x2 ** 2 + (914 / 9) * x2 - (1540 / 9)
 
-phi1[:, 1] = phi1[:, 0] + dt * (x1)
+z[:, 0] = -2*x1 + 8
+
+phi1[:, 1] = phi1[:, 0] + dt * x1
 psi1[:, 1] = psi1[:, 0] + dt * (x1 + 8)
 phi2[:, 1] = phi2[:, 0] + dt * ((2 / 3) * (10.0 - x2))
 psi2[:, 1] = psi2[:, 0] + dt * (2.0 * (10.0 - x2))
+
+for j in range(1, n1):
+    z[j, 1] = z[j, 0] - (dt/(tau*h1))*(z[j, 0] - z[j-1, 0]) #evaluating z(x, 1) as z(x, 0) already known
+
+z[0,1] = (psi1[0,1] - psi1[0,0]) / dt   #z[0,t] = ψ1_t(0,t)
+
 
 # --- Time stepping -----------------------------------------------------------
 for n in range(1, m - 1):
@@ -103,8 +112,6 @@ for n in range(1, m - 1):
     # ψ2(L, t) = 0.
     psi2[-1, n + 1] = 0.0
 
-    psi1[0, n + 1] = ((lambda1/h1)*psi1[1, n+1] + gamma/dt * psi1[0, n])/(gamma/dt + lambda1/h1)
-
     psi1[-1, n + 1] = (lambda2 * psi2[1, n + 1] + lambda1 * psi1[-2, n + 1]) / (lambda1 + lambda2)
 
     psi2[0, n + 1] = psi1[-1, n + 1]
@@ -112,6 +119,19 @@ for n in range(1, m - 1):
     phi2[0, n + 1] = ((kappa2 - kappa1) * psi2[0, n+1] + kappa2 * phi2[1, n+1]/h2 + kappa1 * phi1[-2, n+1]/h2)/(kappa1/h1 + kappa2/h2)
 
     phi1[-1, n + 1] = phi2[0, n + 1]
+
+    #from τ*z_t + z_x = 0, see .txt (25-44)
+    for j in range(1, n1):
+        z[j, n + 1] = z[j, n] - (dt / (tau * h1)) * (z[j, n] - z[j - 1, n])
+
+    #since we already computed z(L0, n+1) we have this formula: (.txt 64)
+    numer = (lambda1 / h1) * psi1[1, n + 1] + (gamma / dt) * psi1[0, n] + mu * z[-1, n + 1]
+    denom = (lambda1 / h1) + (gamma / dt)
+    psi1[0, n + 1] = numer / denom
+
+    z[0, n + 1] = (psi1[0, n + 1] - psi1[0, n]) / dt  #z[0,t] = ψ1_t(0,t)
+
+
 
 # --- Assemble full-domain solution for plotting -----------------------------
 # drop the duplicate interface point at x=L0 in the second segment
