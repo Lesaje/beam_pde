@@ -12,9 +12,9 @@ tau = 1.0
 mu  = 0.5
 
 # --- Discretization ---------------------------------------------------------
-T = 5.0  # total time horizon
+T = 10.0  # total time horizon
 n1, n2 = 200, 300  # grid‐points on [0,L0], [L0,L]
-m = 5000  # time‐steps
+m = 10000  # time‐steps
 dt = T / m
 h1 = L0 / n1
 h2 = (L - L0) / n2
@@ -188,3 +188,27 @@ figψ.update_layout(
 )
 
 figψ.show()
+
+figz = go.Figure(data=[
+    go.Surface(
+        x=t,  # time axis
+        y=X,  # spatial axis
+        z=z,  # z(x,t)
+        colorscale='Viridis',
+        showscale=True
+    )
+])
+
+figz.update_layout(
+    title='Delayed‐Damped Timoshenko Transmission',
+    scene=dict(
+        xaxis_title='Time t',
+        yaxis_title='Position x',
+        zaxis_title='z(x,t)',
+        camera=dict(eye=dict(x=1.5, y=1.5, z=0.5))
+    ),
+    width=800,
+    height=600
+)
+
+figz.show()
