@@ -138,8 +138,8 @@ figφ.update_layout(
         zaxis_title='φ(x,t)',
         camera=dict(eye=dict(x=1.5, y=1.5, z=0.5))
     ),
-    width=800,
-    height=600
+    width=1600,
+    height=1200
 )
 
 figφ.show()
@@ -163,8 +163,8 @@ figψ.update_layout(
         zaxis_title='ψ(x,t)',
         camera=dict(eye=dict(x=1.5, y=1.5, z=0.5))
     ),
-    width=800,
-    height=600
+    width=1600,
+    height=1200
 )
 
 figψ.show()
