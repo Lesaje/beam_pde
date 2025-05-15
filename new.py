@@ -35,10 +35,10 @@ psi2 = np.zeros((n2, m))
 
 f1      = lambda phi, psi: 0
 f2      = lambda phi, psi: 0
-g1      = lambda x: 0
-h1_fun  = lambda x: 0
-g2      = lambda x: 0
-h2_fun  = lambda x: 0
+g1      = lambda x: np.sin(x)
+h1_fun  = lambda x: x
+g2      = lambda x: np.cos(x)
+h2_fun  = lambda x: x + 1
 
 # --- Initial Conditions -----------------------------------------------------
 phi1[:, 0] = -19 / 16 * x1 ** 2 + 200 / 32 * x1
