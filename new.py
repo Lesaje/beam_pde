@@ -12,9 +12,9 @@ tau = 1.0
 mu  = 0.5
 
 # --- Discretization ---------------------------------------------------------
-T = 10.0  # total time horizon
-n1, n2 = 200, 300  # grid‐points on [0,L0], [L0,L]
-m = 10000  # time‐steps
+T = 5.0  # total time horizon
+n1, n2 = 100, 150  # grid‐points on [0,L0], [L0,L]
+m = 5000  # time‐steps
 dt = T / m
 h1 = L0 / n1
 h2 = (L - L0) / n2
@@ -34,12 +34,12 @@ z    = np.zeros((n1, m))
 
 # --- Nonlinearities & Loads -----------------------------------------------
 
-f1      = lambda phi, psi: 0
-f2      = lambda phi, psi: 0
-g1      = lambda x: 0
-h1_fun  = lambda x: 0
-g2      = lambda x: 0
-h2_fun  = lambda x: 0
+f1      = lambda phi, psi: phi**3
+f2      = lambda phi, psi: psi**3
+g1      = lambda x: np.sin(x)
+h1_fun  = lambda x: x
+g2      = lambda x: np.cos(x)
+h2_fun  = lambda x: x + 1
 
 # --- Initial Conditions -----------------------------------------------------
 phi1[:, 0] = -19 / 16 * x1 ** 2 + 200 / 32 * x1
@@ -58,8 +58,7 @@ psi2[:, 1] = psi2[:, 0] + dt * (2.0 * (10.0 - x2))
 for j in range(1, n1):
     z[j, 1] = z[j, 0] - (dt/(tau*h1))*(z[j, 0] - z[j-1, 0]) #evaluating z(x, 1) as z(x, 0) already known
 
-z[0,1] = (psi1[0,1] - psi1[0,0]) / dt   #z[0,t] = ψ1_t(0,t)
-
+z[0,1] = (lambda1*((psi1[1,1] - psi1[0,1])/h1) - mu*z[-1, 1])/gamma
 
 # --- Time stepping -----------------------------------------------------------
 for n in range(1, m - 1):

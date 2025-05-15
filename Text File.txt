@@ -64,3 +64,9 @@ From this we need to express psi1[0,n+1]):
 psi1[0,n+1] = ((lambda1/h1)*psi1[1,n+1] + (gamma/dt)*psi1[0,n] - mu*(z(L0,n) - (dt/(tau*h1))*(z(L0,n) - z(L0-1,n))))/(lambda1/h1 + gamma/dt) (64)
 
 This is the last equation in my notes. Can you analyze them and explain to me what we should write/solve next? Or maybe I did some errors?
+
+lamda1*((psi1[1,1] - psi1[0,1])/h1) = gamma*z(0,1) + mu*z(-1, 1)
+
+gamma*z(0,1) = lamda1*((psi1[1,1] - psi1[0,1])/h1) - mu*z(-1, 1)
+
+z(0,1) = (lamda1*((psi1[1,1] - psi1[0,1])/h1) - mu*z(-1, 1))/gamma
