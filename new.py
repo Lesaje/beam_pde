@@ -34,8 +34,8 @@ z    = np.zeros((n1, m))
 
 # --- Nonlinearities & Loads -----------------------------------------------
 
-f1      = lambda phi, psi: phi**3
-f2      = lambda phi, psi: psi**3
+f1      = lambda phi, psi: 0
+f2      = lambda phi, psi: 0
 g1      = lambda x: np.sin(x)
 h1_fun  = lambda x: x
 g2      = lambda x: np.cos(x)
