@@ -12,9 +12,9 @@ tau = 1.0
 mu  = 0.5
 
 # --- Discretization ---------------------------------------------------------
-T = 5.0  # total time horizon
+T = 200.0  # total time horizon
 n1, n2 = 100, 150  # grid‐points on [0,L0], [L0,L]
-m = 5000  # time‐steps
+m = 10000  # time‐steps
 dt = T / m
 h1 = L0 / n1
 h2 = (L - L0) / n2
@@ -157,8 +157,8 @@ figφ.update_layout(
         zaxis_title='φ(x,t)',
         camera=dict(eye=dict(x=1.5, y=1.5, z=0.5))
     ),
-    width=800,
-    height=600
+    width=1600,
+    height=1200
 )
 
 figφ.show()
@@ -182,12 +182,12 @@ figψ.update_layout(
         zaxis_title='ψ(x,t)',
         camera=dict(eye=dict(x=1.5, y=1.5, z=0.5))
     ),
-    width=800,
-    height=600
+    width=1600,
+    height=1200
 )
 
 figψ.show()
-
+'''
 figz = go.Figure(data=[
     go.Surface(
         x=t,  # time axis
@@ -211,3 +211,4 @@ figz.update_layout(
 )
 
 figz.show()
+'''
